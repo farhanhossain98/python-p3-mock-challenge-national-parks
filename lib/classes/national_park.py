@@ -1,22 +1,43 @@
-from classes.trip import Trip
 
 
 class NationalPark:
+
+    all = []
+
     def __init__(self, name):
         self.name = name
+        NationalPark.all.append(self)
+
+    @property 
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, name):
+        if not hasattr(self, 'name'):
+            if type(name) is str:
+                self._name = name
+            else:
+                raise TypeError('Name must be a string.')
+        else:
+            raise Exception('Name can not be changed after initialization.')
 
     def trips(self):
-        pass
+        return [ trip for trip in Trip.all if trip.national_park is self]
 
     def visitors(self):
-        pass
+        return list(set ( [trip.visitor for trip in self.trips ()]))
 
     def total_visits(self):
-        pass
+        return len(self.trips())
 
     def best_visitor(self):
-        pass
+        visitors = [ trip.visitor for trip in self.trips()]
+        return max( visitors, key = visitors.count)
 
     @classmethod
     def most_visited(cls):
-        pass
+        return max(NationalPark.all, key = lambda national_park: len(national_park.trips())) 
+
+from classes.trip import Trip
+from classes.visitor import Visitor
